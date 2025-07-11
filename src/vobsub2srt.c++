@@ -28,6 +28,8 @@
 
 #include <iostream>
 #include <string>
+#include <memory>
+#include <tesseract/baseapi.h>
 #include <cstdio>
 #include <vector>
 using namespace std;
@@ -212,13 +214,17 @@ int main(int argc, char **argv) {
     return 1;
   }
   if(not blacklist.empty()) {
-    tess_base_api.SetVariable("tessedit_char_blacklist", blacklist.c_str());
+    tess_api.SetVariable("tessedit_char_blacklist", blacklist.c_str());
   }
 #else
-  TessBaseAPI::SimpleInit(tess_path, tess_lang, false); // TODO params
-  if(not blacklist.empty()) {
-    TessBaseAPI::SetVariable("tessedit_char_blacklist", blacklist.c_str());
-  }
+  tesseract::TessBaseAPI tess_api;
+  if (tess_api.Init(tess_path, tess_lang)) {
+    std::cerr << "ERROR: could not initialize tesseract with\n";
+    std::cerr << "       datapath=" << tess_path   << "\n";
+    std::cerr << "       lang="     << tess_lang   << "\n";
+    return 1;
+}
+  tess_api.SetVariable("tessedit_char_blacklist", blacklist.c_str());
 #endif
 
   // Open srt output file
@@ -270,9 +276,15 @@ int main(int argc, char **argv) {
       }
 
 #ifdef CONFIG_TESSERACT_NAMESPACE
-      char *text = tess_base_api.TesseractRect(image, 1, stride, 0, 0, width, height);
+      char *text = tess_api.TesseractRect(
+        image,
+        /*bytes_per_pixel=*/1, stride,
+        /*x=*/0, /*y=*/0, width, height);
 #else
-      char *text = TessBaseAPI::TesseractRect(image, 1, stride, 0, 0, width, height);
+      char *text = tess_api.TesseractRect(
+        image,
+        /*bytes_per_pixel=*/1, stride,
+        /*x=*/0, /*y=*/0, width, height);
 #endif
       if(not text) {
         cerr << "ERROR: OCR failed for " << sub_counter << '\n';
@@ -309,9 +321,9 @@ int main(int argc, char **argv) {
   }
 
 #ifdef CONFIG_TESSERACT_NAMESPACE
-  tess_base_api.End();
+  tess_api.End();
 #else
-  TessBaseAPI::End();
+  tess_api.End();
 #endif
   fclose(srtout);
   cout << "Wrote Subtitles to '" << srt_filename << "'\n";
