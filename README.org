@@ -25,8 +25,11 @@ Note that the support for tesseract 2 is deprecated and will be removed in the
 future!
 
 #+BEGIN_EXAMPLE
+  brew install tesseract
   ./configure
-  make
+  mkdir build && cd build
+  cmake ..
+  make -j$(sysctl -n hw.ncpu)
   sudo make install
 #+END_EXAMPLE
 
@@ -70,17 +73,6 @@ You can also create a source package and upload it to your own PPA by using the
 =UploadPPA.cmake=. But this is only recommended for people experienced with
 cmake and creating Debian packages.
 
-** Homebrew
-Vobsub2srt contains a formula for [[http://mxcl.github.com/homebrew/][Homebrew]] (a package manager for OS X).  It can
-be installed by using the following commands:
-
-#+BEGIN_EXAMPLE
-  brew install tesseract
-  ./configure
-  mkdir build && cd build
-  cmake ..
-  make -j$(sysctl -n hw.ncpu)
-#+END_EXAMPLE
 
 ** Gentoo ebuild
 An [[http://en.wikipedia.org/wiki/Ebuild][ebuild]] for Gentoo Linux is also available.  You can make it available to
