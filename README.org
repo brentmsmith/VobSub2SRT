@@ -14,7 +14,7 @@ files with a text editor or a special subtitle editor.
 
 * Building
 You need tesseract. You also need cmake and a gcc to build it.
-With Ubuntu 12.10 you can install the dependencies with
+With macOS you can install the dependencies with
 
 #+BEGIN_EXAMPLE
   brew install tesseract
