@@ -17,7 +17,7 @@ You need tesseract. You also need cmake and a gcc to build it.
 With Ubuntu 12.10 you can install the dependencies with
 
 #+BEGIN_EXAMPLE
-  sudo apt-get install libtiff5-dev libtesseract-dev tesseract-ocr-eng build-essential cmake pkg-config
+  brew install tesseract
 #+END_EXAMPLE
 
 You should also install the tesseract data for the languages you want to use!
@@ -25,7 +25,6 @@ Note that the support for tesseract 2 is deprecated and will be removed in the
 future!
 
 #+BEGIN_EXAMPLE
-  brew install tesseract
   ./configure
   mkdir build && cd build
   cmake ..
